@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Uproot Catch & Clean</title>
+  <title>Uproot Clean & Catch</title>
   <style>
     * {
       box-sizing: border-box;
@@ -417,7 +417,7 @@
     <!-- INTRO SCREEN -->
     <div id="screen-intro" class="screen active">
       <div class="intro-card">
-        <div class="eyebrow">Uproot Catch & Clean</div>
+        <div class="eyebrow">Uproot Clean & Catch</div>
         <div class="title">Catch & win your clean-laundry upgrade</div>
         <div class="subtitle">
           Play a quick 5-ball drop game to unlock
@@ -561,7 +561,7 @@
               <span class="share-card-tag">Reward unlocked</span>
             </div>
             <div id="shareSummary" class="share-card-main">
-              Uproot Catch & Clean result: I caught 0 of 5 drops and unlocked: 5% Off.
+              Uproot Clean & Catch result: I caught 0 of 5 drops and unlocked: 5% Off.
             </div>
             <div id="shareSubline" class="share-card-sub">
               Share this with your agent so they can apply the reward to my order.
@@ -987,7 +987,7 @@
 
       shareMessage = `${summary}\n\n${subline}`;
       shareMessage = 
-        `🏆 Uproot Catch & Clean Result!\n` +
+        `🏆 Uproot Clean & Catch Result!\n` +
         `I caught ${ballsCaught} of 5 drops and unlocked: ${cleanHeadline} 🎉\n\n` +
         `Share this with your agent so they can apply the reward to your order.`;
 
@@ -1037,7 +1037,7 @@
           const url = URL.createObjectURL(blob);
           const a = document.createElement("a");
           a.href = url;
-          a.download = "uproot-catch-clean-result.png";
+          a.download = "uproot-clean-catch-result.png";
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);

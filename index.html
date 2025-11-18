@@ -122,7 +122,7 @@
       cursor: pointer;
       font-size: 0.96rem;
       font-weight: 600;
-      transition: transform 80ms ease, box-shadow 80ms ease, background 120ms.ease, color 120ms ease;
+      transition: transform 80ms ease, box-shadow 80ms ease, background 120ms ease, color 120ms ease;
     }
 
     .primary-btn {
@@ -149,6 +149,7 @@
     }
 
     .ghost-btn {
+      width: auto;
       background: transparent;
       color: #0369a1;
       border: none;
@@ -158,6 +159,7 @@
       box-shadow: none;
       padding-top: 6px;
       padding-bottom: 6px;
+      font-size: 0.8rem;
     }
 
     .ghost-btn:hover {
@@ -309,7 +311,7 @@
       box-shadow: 0 6px 14px rgba(34, 197, 94, 0.45);
     }
 
-    /* RESULT */
+    /* RESULT + SHARE CARD */
 
     .result-card {
       text-align: center;
@@ -317,49 +319,85 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
+      align-items: stretch;
+    }
+
+    .share-card {
+      border-radius: 18px;
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      background: linear-gradient(to bottom right, #f9fafb 0%, #eff6ff 35%, #ecfdf5 100%);
+      padding: 14px 14px 12px;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+      text-align: left;
+      position: relative;
+    }
+
+    .share-card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .share-card-logo-wrap {
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 14px rgba(15, 23, 42, 0.12);
+      overflow: hidden;
+    }
+
+    .share-card-logo-wrap img {
+      max-width: 38px;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .share-card-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .share-card-subtitle {
+      font-size: 0.78rem;
+      color: #64748b;
     }
 
     .reward-highlight {
-      font-size: 1.25rem;
+      font-size: 1.1rem;
       font-weight: 700;
       margin-bottom: 4px;
       color: #0f172a;
     }
 
     .reward-sub {
-      font-size: 0.9rem;
+      font-size: 0.88rem;
+      color: #475569;
+      margin-bottom: 8px;
+    }
+
+    .share-card-footer {
+      font-size: 0.8rem;
       color: #64748b;
-      margin-bottom: 4px;
+      border-top: 1px dashed rgba(148, 163, 184, 0.7);
+      padding-top: 8px;
+      margin-top: 6px;
     }
 
     .result-tagline {
       font-size: 0.78rem;
       color: #94a3b8;
-      margin-bottom: 6px;
     }
 
-    .share-preview {
-      text-align: left;
-      margin-top: 4px;
-      padding: 10px 12px;
-      border-radius: 16px;
-      background: rgba(15, 23, 42, 0.03);
-      border: 1px solid rgba(148, 163, 184, 0.5);
-    }
-
-    .share-preview-label {
+    .copy-status {
       font-size: 0.78rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #64748b;
-      margin-bottom: 6px;
-    }
-
-    .share-preview-text {
-      font-size: 0.86rem;
-      color: #0f172a;
-      white-space: pre-wrap;
+      color: #16a34a;
+      min-height: 1em;
     }
 
     @media (max-width: 520px) {
@@ -374,6 +412,7 @@
 <body>
   <div class="app-shell">
     <div class="logo-row">
+      <!-- Logo at top -->
       <img src="uproot-clean-logo.png" alt="Uproot Clean Logo" />
     </div>
 
@@ -383,19 +422,19 @@
         <div class="eyebrow">Uproot Catch & Clean</div>
         <div class="title">Catch & win your clean-laundry upgrade</div>
         <div class="subtitle">
-          Play a quick 5-ball drop game to unlock<span style="white-space:nowrap;"> free shipping</span> and
+          Play a quick 5-ball drop game to unlock <span style="white-space:nowrap;">free shipping</span> and
           extra savings on your next clean-home routine.
         </div>
 
         <div class="reward-pills">
           <div class="reward-pill">
-            <span class="icon">🚚</span> Free shipping
+            <span class="icon">💸</span> Always at least 5% off
           </div>
           <div class="reward-pill">
             <span class="icon">✨</span> Up to 10% extra off
           </div>
           <div class="reward-pill">
-            <span class="icon">⏱️</span> 30 seconds, 5 drops
+            <span class="icon">🚚</span> Top score adds free shipping
           </div>
         </div>
 
@@ -420,7 +459,7 @@
 
         <canvas id="gameCanvas" width="360" height="480"></canvas>
         <div class="game-help">
-          Move the basket with your mouse, arrow keys, or finger. Catch as many balls as you can!
+          Move the basket with your mouse, touch, or arrow keys. Catch as many balls as you can!
         </div>
       </div>
     </div>
@@ -487,7 +526,7 @@
             <button class="scale-pill" data-value="5">5</button>
           </div>
           <div style="font-size:0.75rem;color:#9ca3af;margin-top:4px;">
-            1 = “Nice to have” · 5 = “Non-negotiable”
+            1 = “Nice to have” &nbsp;&middot;&nbsp; 5 = “Non-negotiable”
           </div>
         </div>
 
@@ -502,22 +541,33 @@
     <!-- RESULT SCREEN -->
     <div id="screen-result" class="screen">
       <div class="result-card">
-        <div class="eyebrow">Nice catch</div>
-        <div id="rewardHeadline" class="reward-highlight">
-          Reward headline here
-        </div>
-        <div id="rewardSub" class="reward-sub">
-          Reward description here
-        </div>
-        <div class="result-tagline">
-          Copy the message below and send it back to your agent so they can apply your reward.
+        <div class="share-card" id="shareCard">
+          <div class="share-card-header">
+            <div class="share-card-logo-wrap">
+              <img src="uproot-clean-logo.png" alt="Uproot Clean Logo" />
+            </div>
+            <div>
+              <div class="share-card-title">Uproot Catch & Clean</div>
+              <div class="share-card-subtitle" id="shareSubHeader">
+                Skill game reward results
+              </div>
+            </div>
+          </div>
+
+          <div class="reward-highlight" id="rewardHeadline">
+            Reward headline here
+          </div>
+          <div class="reward-sub" id="rewardSub">
+            Reward description here
+          </div>
+
+          <div class="share-card-footer" id="shareFooter">
+            Share this card with your agent so they can apply the reward to your order.
+          </div>
         </div>
 
-        <div class="share-preview">
-          <div class="share-preview-label">Share-ready message</div>
-          <div id="shareTextPreview" class="share-preview-text">
-            <!-- Filled by JS -->
-          </div>
+        <div class="result-tagline">
+          When you tap “Copy & share with my agent”, we will copy a ready-to-send message summarizing your score and reward.
         </div>
 
         <div class="btn-stack">
@@ -525,9 +575,11 @@
             Play again (demo)
           </button>
           <button class="primary-btn" id="shareBtn">
-            Copy & share with your agent
+            Copy & share with my agent
           </button>
         </div>
+
+        <div class="copy-status" id="copyStatus"></div>
       </div>
     </div>
   </div>
@@ -565,7 +617,8 @@
     let gameRunning = false;
     let lastTimestamp = 0;
 
-    const BASKET_BASE_WIDTH = 70; // already set to narrower width
+    // Basket width (~4/5 of earlier size)
+    const BASKET_BASE_WIDTH = 70;
 
     function initPegs() {
       pegs = [];
@@ -626,6 +679,7 @@
 
       const ballRadius = 8;
 
+      // Start ball above a random peg in the top row
       const startX =
         topRowPegXs.length > 0
           ? topRowPegXs[Math.floor(Math.random() * topRowPegXs.length)]
@@ -688,6 +742,7 @@
           ball.vx *= damping;
           ball.vy *= damping;
 
+          // small randomness so paths vary
           ball.vx += (Math.random() - 0.5) * 0.4;
         }
       }
@@ -808,6 +863,7 @@
       requestAnimationFrame(gameLoop);
     }
 
+    // Basket control
     function moveBasket(dx) {
       if (!basket) return;
       basket.x += dx;
@@ -827,7 +883,7 @@
       }
     });
 
-    // Desktop mouse control
+    // Desktop mouse move
     canvas.addEventListener("mousemove", (e) => {
       if (!screens.game.classList.contains("active")) return;
       if (!basket) return;
@@ -840,14 +896,16 @@
       }
     });
 
-    // Mobile control (drag to move)
+    // Mobile touch (drag)
     function handleTouchMove(e) {
-      e.preventDefault();
       if (!screens.game.classList.contains("active")) return;
       if (!basket) return;
 
+      e.preventDefault();
+
       const rect = canvas.getBoundingClientRect();
       const touch = e.touches[0];
+
       const scaleX = canvas.width / rect.width;
       const canvasX = (touch.clientX - rect.left) * scaleX;
 
@@ -891,43 +949,42 @@
     wireOptionGroup("petType", ".option-row", "option-pill");
     wireOptionGroup("cleanScore", ".scale-row", "scale-pill");
 
-    let lastShareMessage = "";
-
+    // --------- REWARD / SHARE TEXT ----------
     function computeRewardText() {
       let headline = "";
       let sub = "";
-      let rewardLabel = "";
+      let rewardShort = "";
 
-      // New reward tiers:
-      // 0–1 catches => 5% Off
-      // 2–3 catches => 10% Off
-      // 4–5 catches => 10% Off + Free Shipping
+      // New tiers:
+      // 0–1 catches: 5% Off
+      // 2–3 catches: 10% Off
+      // 4–5 catches: 10% Off + Free Shipping
       if (ballsCaught <= 1) {
-        rewardLabel = "5% Off";
+        rewardShort = "5% Off";
         headline = "You unlocked 5% Off 🎁";
         sub =
-          "Nice try. You still unlocked 5% off your next clean-home order. Your agent will apply it when you text them this result.";
+          "Just by playing, you earned 5% off your next clean-home order. Your agent will attach your reward when they finalize your cart.";
       } else if (ballsCaught <= 3) {
-        rewardLabel = "10% Off";
-        headline = "You unlocked 10% Off ✨";
+        rewardShort = "10% Off";
+        headline = "Nicely done — 10% Off ✨";
         sub =
-          "Solid catching skills. You unlocked 10% off your next order. Share your result with your agent so they can apply it.";
+          "Your catching skills earned you 10% off your next order. Share this result with your agent so they can apply your reward.";
       } else {
-        rewardLabel = "10% Off + Free Shipping";
-        headline = "10% Off + Free Shipping 🏆";
+        rewardShort = "10% Off + Free Shipping";
+        headline = "You unlocked 10% Off + Free Shipping 🏆";
         sub =
-          "You crushed it. You unlocked 10% off plus free shipping on your next order. Share your result so your agent can lock it in.";
+          "You crushed it. You unlocked 10% off plus free shipping on your next order. Share this with your agent so they can attach it to your cart.";
       }
 
-      return { headline, sub, rewardLabel };
+      return { headline, sub, rewardShort };
     }
 
-    function buildShareMessage(rewardLabel) {
+    function buildShareMessage(rewardShortText) {
       return (
         "Uproot Catch & Clean result: I caught " +
         ballsCaught +
         " of 5 drops and unlocked: " +
-        rewardLabel +
+        rewardShortText +
         ".\n\n" +
         "Share this with your agent so they can apply the reward to your order."
       );
@@ -941,14 +998,20 @@
     });
 
     document.getElementById("submitAnswersBtn").addEventListener("click", () => {
-      const { headline, sub, rewardLabel } = computeRewardText();
+      // At this point you could send `answerState` and `ballsCaught` to your backend
+
+      const { headline, sub, rewardShort } = computeRewardText();
       document.getElementById("rewardHeadline").textContent = headline;
       document.getElementById("rewardSub").textContent = sub;
 
-      lastShareMessage = buildShareMessage(rewardLabel);
-      document.getElementById("shareTextPreview").textContent = lastShareMessage;
+      // Update share subheader with mini summary
+      const shareSubHeader = document.getElementById("shareSubHeader");
+      shareSubHeader.textContent =
+        "I caught " + ballsCaught + " of 5 drops and unlocked: " + rewardShort + ".";
 
-      // Here is where you'd send answerState + ballsCaught to your backend.
+      // Store rewardShort on element for later copy
+      document.getElementById("shareCard").dataset.rewardShort = rewardShort;
+
       showScreen("result");
     });
 
@@ -956,24 +1019,26 @@
       showScreen("game");
       resetGameState();
       createNewBall();
+      document.getElementById("copyStatus").textContent = "";
     });
 
     document.getElementById("shareBtn").addEventListener("click", async () => {
-      const textToCopy = lastShareMessage || buildShareMessage("5% Off");
+      const shareCard = document.getElementById("shareCard");
+      const rewardShort = shareCard.dataset.rewardShort || "my reward";
 
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        try {
-          await navigator.clipboard.writeText(textToCopy);
-          alert("Message copied. Paste this into your text thread with your agent.");
-        } catch (err) {
-          console.error(err);
-          window.prompt("Copy this message:", textToCopy);
-        }
-      } else {
-        window.prompt("Copy this message:", textToCopy);
+      const shareText = buildShareMessage(rewardShort);
+      const copyStatus = document.getElementById("copyStatus");
+
+      try {
+        await navigator.clipboard.writeText(shareText);
+        copyStatus.textContent = "Copied! Paste this into your message thread with your agent.";
+      } catch (err) {
+        copyStatus.textContent =
+          "Could not copy automatically. You can still screenshot this card and send it to your agent.";
       }
     });
 
+    // Kick off render loop
     requestAnimationFrame(gameLoop);
   </script>
 </body>

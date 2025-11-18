@@ -149,7 +149,6 @@
     }
 
     .ghost-btn {
-      width: auto;
       background: transparent;
       color: #0369a1;
       border: none;
@@ -159,7 +158,6 @@
       box-shadow: none;
       padding-top: 6px;
       padding-bottom: 6px;
-      font-size: 0.8rem;
     }
 
     .ghost-btn:hover {
@@ -311,93 +309,94 @@
       box-shadow: 0 6px 14px rgba(34, 197, 94, 0.45);
     }
 
-    /* RESULT + SHARE CARD */
+    /* RESULT */
 
     .result-card {
       text-align: center;
       padding: 8px 4px 0;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      align-items: stretch;
-    }
-
-    .share-card {
-      border-radius: 18px;
-      border: 1px solid rgba(148, 163, 184, 0.55);
-      background: linear-gradient(to bottom right, #f9fafb 0%, #eff6ff 35%, #ecfdf5 100%);
-      padding: 14px 14px 12px;
-      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
-      text-align: left;
-      position: relative;
-    }
-
-    .share-card-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    .share-card-logo-wrap {
-      width: 42px;
-      height: 42px;
-      border-radius: 999px;
-      background: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 6px 14px rgba(15, 23, 42, 0.12);
-      overflow: hidden;
-    }
-
-    .share-card-logo-wrap img {
-      max-width: 38px;
-      height: auto;
-      object-fit: contain;
-    }
-
-    .share-card-title {
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: #0f172a;
-    }
-
-    .share-card-subtitle {
-      font-size: 0.78rem;
-      color: #64748b;
     }
 
     .reward-highlight {
-      font-size: 1.1rem;
+      font-size: 1.25rem;
       font-weight: 700;
       margin-bottom: 4px;
       color: #0f172a;
     }
 
     .reward-sub {
-      font-size: 0.88rem;
-      color: #475569;
-      margin-bottom: 8px;
-    }
-
-    .share-card-footer {
-      font-size: 0.8rem;
+      font-size: 0.9rem;
       color: #64748b;
-      border-top: 1px dashed rgba(148, 163, 184, 0.7);
-      padding-top: 8px;
-      margin-top: 6px;
+      margin-bottom: 10px;
     }
 
     .result-tagline {
       font-size: 0.78rem;
       color: #94a3b8;
+      margin-bottom: 12px;
     }
 
-    .copy-status {
+    /* SHARE CARD */
+
+    .share-card-wrapper {
+      margin-top: 8px;
+      margin-bottom: 10px;
+    }
+
+    .share-card {
+      display: inline-block;
+      text-align: left;
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: radial-gradient(circle at top left, #e0f2fe 0%, #f9fafb 45%, #e5f9f0 100%);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.18);
+      min-width: 260px;
+    }
+
+    .share-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .share-card-logo {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .share-card-logo img {
+      height: 26px;
+      width: auto;
+    }
+
+    .share-card-brand {
       font-size: 0.78rem;
-      color: #16a34a;
-      min-height: 1em;
+      font-weight: 600;
+      color: #0f172a;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .share-card-tag {
+      font-size: 0.72rem;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: rgba(34, 197, 94, 0.08);
+      color: #047857;
+      border: 1px solid rgba(34, 197, 94, 0.4);
+    }
+
+    .share-card-main {
+      font-size: 0.86rem;
+      color: #0f172a;
+      margin-bottom: 4px;
+    }
+
+    .share-card-sub {
+      font-size: 0.8rem;
+      color: #475569;
     }
 
     @media (max-width: 520px) {
@@ -412,7 +411,6 @@
 <body>
   <div class="app-shell">
     <div class="logo-row">
-      <!-- Logo at top -->
       <img src="uproot-clean-logo.png" alt="Uproot Clean Logo" />
     </div>
 
@@ -422,19 +420,19 @@
         <div class="eyebrow">Uproot Catch & Clean</div>
         <div class="title">Catch & win your clean-laundry upgrade</div>
         <div class="subtitle">
-          Play a quick 5-ball drop game to unlock <span style="white-space:nowrap;">free shipping</span> and
-          extra savings on your next clean-home routine.
+          Play a quick 5-ball drop game to unlock
+          <span style="white-space:nowrap;">free shipping</span> and extra savings on your next clean-home routine.
         </div>
 
         <div class="reward-pills">
           <div class="reward-pill">
-            <span class="icon">💸</span> Always at least 5% off
+            <span class="icon">💸</span> 5–10% off
           </div>
           <div class="reward-pill">
-            <span class="icon">✨</span> Up to 10% extra off
+            <span class="icon">🚚</span> Free shipping top tier
           </div>
           <div class="reward-pill">
-            <span class="icon">🚚</span> Top score adds free shipping
+            <span class="icon">⏱️</span> 30 seconds, 5 drops
           </div>
         </div>
 
@@ -459,7 +457,7 @@
 
         <canvas id="gameCanvas" width="360" height="480"></canvas>
         <div class="game-help">
-          Move the basket with your mouse, touch, or arrow keys. Catch as many balls as you can!
+          Move the basket with your mouse, touch, or arrow keys. Catch as many drops as you can!
         </div>
       </div>
     </div>
@@ -526,7 +524,7 @@
             <button class="scale-pill" data-value="5">5</button>
           </div>
           <div style="font-size:0.75rem;color:#9ca3af;margin-top:4px;">
-            1 = “Nice to have” &nbsp;&middot;&nbsp; 5 = “Non-negotiable”
+            1 = “Nice to have” · 5 = “Non-negotiable”
           </div>
         </div>
 
@@ -541,48 +539,53 @@
     <!-- RESULT SCREEN -->
     <div id="screen-result" class="screen">
       <div class="result-card">
-        <div class="share-card" id="shareCard">
-          <div class="share-card-header">
-            <div class="share-card-logo-wrap">
-              <img src="uproot-clean-logo.png" alt="Uproot Clean Logo" />
-            </div>
-            <div>
-              <div class="share-card-title">Uproot Catch & Clean</div>
-              <div class="share-card-subtitle" id="shareSubHeader">
-                Skill game reward results
-              </div>
-            </div>
-          </div>
-
-          <div class="reward-highlight" id="rewardHeadline">
-            Reward headline here
-          </div>
-          <div class="reward-sub" id="rewardSub">
-            Reward description here
-          </div>
-
-          <div class="share-card-footer" id="shareFooter">
-            Share this card with your agent so they can apply the reward to your order.
-          </div>
+        <div class="eyebrow">Nice catch</div>
+        <div id="rewardHeadline" class="reward-highlight">
+          Reward headline here
+        </div>
+        <div id="rewardSub" class="reward-sub">
+          Reward description here
+        </div>
+        <div class="result-tagline">
+          Share your result with your agent so they can apply the reward to your order.
         </div>
 
-        <div class="result-tagline">
-          When you tap “Copy & share with my agent”, we will copy a ready-to-send message summarizing your score and reward.
+        <!-- Share-ready card (this is what becomes the image) -->
+        <div class="share-card-wrapper">
+          <div id="shareCard" class="share-card">
+            <div class="share-card-header">
+              <div class="share-card-logo">
+                <img src="uproot-clean-logo.png" alt="Uproot Clean" />
+                <span class="share-card-brand">Uproot Catch &amp; Clean</span>
+              </div>
+              <span class="share-card-tag">Reward unlocked</span>
+            </div>
+            <div id="shareSummary" class="share-card-main">
+              Uproot Catch & Clean result: I caught 0 of 5 drops and unlocked: 5% Off.
+            </div>
+            <div id="shareSubline" class="share-card-sub">
+              Share this with your agent so they can apply the reward to my order.
+            </div>
+          </div>
         </div>
 
         <div class="btn-stack">
           <button class="secondary-btn" id="playDemoBtn">
             Play again (demo)
           </button>
-          <button class="primary-btn" id="shareBtn">
-            Copy & share with my agent
+          <button class="primary-btn" id="saveCardBtn">
+            Save result card image
+          </button>
+          <button class="ghost-btn" id="copyShareTextBtn">
+            Copy result text for my agent
           </button>
         </div>
-
-        <div class="copy-status" id="copyStatus"></div>
       </div>
     </div>
   </div>
+
+  <!-- html2canvas for turning the card into an image -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
   <script>
     // --------- SCREEN HANDLING ----------
@@ -617,14 +620,13 @@
     let gameRunning = false;
     let lastTimestamp = 0;
 
-    // Basket width (~4/5 of earlier size)
-    const BASKET_BASE_WIDTH = 70;
+    const BASKET_BASE_WIDTH = 70; // already reduced width
 
     function initPegs() {
       pegs = [];
       topRowPegXs = [];
 
-      const rows = 6; // extra row for difficulty
+      const rows = 6;
       const cols = 7;
       const pegRadius = 6;
       const verticalSpacing = 52;
@@ -679,7 +681,6 @@
 
       const ballRadius = 8;
 
-      // Start ball above a random peg in the top row
       const startX =
         topRowPegXs.length > 0
           ? topRowPegXs[Math.floor(Math.random() * topRowPegXs.length)]
@@ -742,7 +743,6 @@
           ball.vx *= damping;
           ball.vy *= damping;
 
-          // small randomness so paths vary
           ball.vx += (Math.random() - 0.5) * 0.4;
         }
       }
@@ -765,7 +765,7 @@
         return;
       }
 
-      // fell below
+      // below screen
       if (ball.y - ball.radius > canvas.height + 10) {
         ball = null;
         setTimeout(() => {
@@ -863,7 +863,6 @@
       requestAnimationFrame(gameLoop);
     }
 
-    // Basket control
     function moveBasket(dx) {
       if (!basket) return;
       basket.x += dx;
@@ -896,16 +895,13 @@
       }
     });
 
-    // Mobile touch (drag)
+    // Mobile touch move
     function handleTouchMove(e) {
       if (!screens.game.classList.contains("active")) return;
       if (!basket) return;
-
       e.preventDefault();
-
       const rect = canvas.getBoundingClientRect();
       const touch = e.touches[0];
-
       const scaleX = canvas.width / rect.width;
       const canvasX = (touch.clientX - rect.left) * scaleX;
 
@@ -949,45 +945,52 @@
     wireOptionGroup("petType", ".option-row", "option-pill");
     wireOptionGroup("cleanScore", ".scale-row", "scale-pill");
 
-    // --------- REWARD / SHARE TEXT ----------
     function computeRewardText() {
       let headline = "";
       let sub = "";
-      let rewardShort = "";
 
-      // New tiers:
-      // 0–1 catches: 5% Off
-      // 2–3 catches: 10% Off
-      // 4–5 catches: 10% Off + Free Shipping
+      // New reward mapping:
+      // 0–1 = 5% off
+      // 2–3 = 10% off
+      // 4–5 = 10% off + Free Shipping
       if (ballsCaught <= 1) {
-        rewardShort = "5% Off";
-        headline = "You unlocked 5% Off 🎁";
+        headline = "You unlocked 5% Off 💸";
         sub =
-          "Just by playing, you earned 5% off your next clean-home order. Your agent will attach your reward when they finalize your cart.";
+          "Thanks for playing! You earned 5% off your next clean-home order. Your unique reward will be wired into this flow.";
       } else if (ballsCaught <= 3) {
-        rewardShort = "10% Off";
-        headline = "Nicely done — 10% Off ✨";
+        headline = "You unlocked 10% Off ✨";
         sub =
-          "Your catching skills earned you 10% off your next order. Share this result with your agent so they can apply your reward.";
+          "Nice catching. You earned 10% off your next order. Your code or link will be connected here by your agent.";
       } else {
-        rewardShort = "10% Off + Free Shipping";
-        headline = "You unlocked 10% Off + Free Shipping 🏆";
+        headline = "10% Off + Free Shipping 🏆";
         sub =
-          "You crushed it. You unlocked 10% off plus free shipping on your next order. Share this with your agent so they can attach it to your cart.";
+          "You crushed it. You unlocked 10% off plus free shipping on your next order. Your high score just upgraded laundry day.";
       }
 
-      return { headline, sub, rewardShort };
+      return { headline, sub };
     }
 
-    function buildShareMessage(rewardShortText) {
-      return (
-        "Uproot Catch & Clean result: I caught " +
-        ballsCaught +
-        " of 5 drops and unlocked: " +
-        rewardShortText +
-        ".\n\n" +
-        "Share this with your agent so they can apply the reward to your order."
-      );
+    let shareMessage = "";
+
+    function updateShareCard(headline) {
+      const summaryEl = document.getElementById("shareSummary");
+      const sublineEl = document.getElementById("shareSubline");
+
+      const cleanHeadline = headline.replace(/ [🎁✨🏆]/g, "");
+      const summary =
+        `🏆 I caught ${ballsCaught} of 5 drops and unlocked: ${cleanHeadline} 🎉`;
+      const subline =
+        "Share this with your agent so they can apply the reward to your order.";
+
+      summaryEl.textContent = summary;
+      sublineEl.textContent = subline;
+
+      shareMessage = `${summary}\n\n${subline}`;
+      shareMessage = 
+        `🏆 Uproot Catch & Clean Result!\n` +
+        `I caught ${ballsCaught} of 5 drops and unlocked: ${cleanHeadline} 🎉\n\n` +
+        `Share this with your agent so they can apply the reward to your order.`;
+
     }
 
     // --------- EVENT WIRING ----------
@@ -998,19 +1001,14 @@
     });
 
     document.getElementById("submitAnswersBtn").addEventListener("click", () => {
-      // At this point you could send `answerState` and `ballsCaught` to your backend
-
-      const { headline, sub, rewardShort } = computeRewardText();
+      const { headline, sub } = computeRewardText();
       document.getElementById("rewardHeadline").textContent = headline;
       document.getElementById("rewardSub").textContent = sub;
 
-      // Update share subheader with mini summary
-      const shareSubHeader = document.getElementById("shareSubHeader");
-      shareSubHeader.textContent =
-        "I caught " + ballsCaught + " of 5 drops and unlocked: " + rewardShort + ".";
+      // Update share card + text
+      updateShareCard(headline);
 
-      // Store rewardShort on element for later copy
-      document.getElementById("shareCard").dataset.rewardShort = rewardShort;
+      // Here is where you'd send `answerState` and `ballsCaught` to your backend.
 
       showScreen("result");
     });
@@ -1019,26 +1017,36 @@
       showScreen("game");
       resetGameState();
       createNewBall();
-      document.getElementById("copyStatus").textContent = "";
     });
 
-    document.getElementById("shareBtn").addEventListener("click", async () => {
-      const shareCard = document.getElementById("shareCard");
-      const rewardShort = shareCard.dataset.rewardShort || "my reward";
-
-      const shareText = buildShareMessage(rewardShort);
-      const copyStatus = document.getElementById("copyStatus");
-
+    // Copy result text
+    document.getElementById("copyShareTextBtn").addEventListener("click", async () => {
       try {
-        await navigator.clipboard.writeText(shareText);
-        copyStatus.textContent = "Copied! Paste this into your message thread with your agent.";
+        await navigator.clipboard.writeText(shareMessage || "");
+        alert("Result text copied. Paste this into your message to your agent.");
       } catch (err) {
-        copyStatus.textContent =
-          "Could not copy automatically. You can still screenshot this card and send it to your agent.";
+        alert("Could not copy automatically. You may need to copy manually.");
       }
     });
 
-    // Kick off render loop
+    // Save result card as image (PNG)
+    document.getElementById("saveCardBtn").addEventListener("click", () => {
+      const card = document.getElementById("shareCard");
+      html2canvas(card, { backgroundColor: null, scale: 2 }).then((canvas) => {
+        canvas.toBlob((blob) => {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "uproot-catch-clean-result.png";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        });
+      });
+    });
+
+    // Start loop
     requestAnimationFrame(gameLoop);
   </script>
 </body>

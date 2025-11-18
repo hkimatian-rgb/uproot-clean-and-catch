@@ -405,6 +405,18 @@
         border-radius: 18px;
         padding: 16px 14px 18px;
       }
+
+      /* Keep the share card centered and inside the shell on phones */
+      .share-card-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+      }
+
+      .share-card {
+        max-width: 100%;
+        box-sizing: border-box;
+      }
     }
   </style>
 </head>
@@ -556,7 +568,7 @@
             <div class="share-card-header">
               <div class="share-card-logo">
                 <img src="uproot-clean-logo.png" alt="Uproot Clean" />
-                <span class="share-card-brand">Uproot Catch &amp; Clean</span>
+                <span class="share-card-brand">Uproot Clean &amp; Catch</span>
               </div>
               <span class="share-card-tag">Reward unlocked</span>
             </div>
@@ -986,11 +998,10 @@
       sublineEl.textContent = subline;
 
       shareMessage = `${summary}\n\n${subline}`;
-      shareMessage = 
+      shareMessage =
         `🏆 Uproot Clean & Catch Result!\n` +
         `I caught ${ballsCaught} of 5 drops and unlocked: ${cleanHeadline} 🎉\n\n` +
         `Share this with your agent so they can apply the reward to your order.`;
-
     }
 
     // --------- EVENT WIRING ----------
@@ -1029,11 +1040,36 @@
       }
     });
 
-    // Save result card as image (PNG)
+    // Save/share result card as image (PNG)
     document.getElementById("saveCardBtn").addEventListener("click", () => {
       const card = document.getElementById("shareCard");
       html2canvas(card, { backgroundColor: null, scale: 2 }).then((canvas) => {
-        canvas.toBlob((blob) => {
+        canvas.toBlob(async (blob) => {
+          if (!blob) return;
+
+          // Try to use the Web Share API with a file (better on phones)
+          try {
+            const file = new File([blob], "uproot-clean-catch-result.png", {
+              type: "image/png",
+            });
+
+            if (
+              navigator.share &&
+              navigator.canShare &&
+              navigator.canShare({ files: [file] })
+            ) {
+              await navigator.share({
+                files: [file],
+                title: "Uproot Clean & Catch Result",
+                text: shareMessage || "",
+              });
+              return;
+            }
+          } catch (e) {
+            // If anything goes wrong, fall through to download fallback
+          }
+
+          // Fallback: desktop-style download
           const url = URL.createObjectURL(blob);
           const a = document.createElement("a");
           a.href = url;

@@ -42,7 +42,7 @@
     }
 
     .logo-row img {
-      max-width: 170px; /* smaller logo */
+      max-width: 170px;
       height: auto;
       object-fit: contain;
     }
@@ -122,7 +122,7 @@
       cursor: pointer;
       font-size: 0.96rem;
       font-weight: 600;
-      transition: transform 80ms ease, box-shadow 80ms ease, background 120ms ease, color 120ms ease;
+      transition: transform 80ms ease, box-shadow 80ms ease, background 120ms.ease, color 120ms ease;
     }
 
     .primary-btn {
@@ -314,6 +314,9 @@
     .result-card {
       text-align: center;
       padding: 8px 4px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
     .reward-highlight {
@@ -326,13 +329,37 @@
     .reward-sub {
       font-size: 0.9rem;
       color: #64748b;
-      margin-bottom: 14px;
+      margin-bottom: 4px;
     }
 
     .result-tagline {
       font-size: 0.78rem;
       color: #94a3b8;
-      margin-bottom: 12px;
+      margin-bottom: 6px;
+    }
+
+    .share-preview {
+      text-align: left;
+      margin-top: 4px;
+      padding: 10px 12px;
+      border-radius: 16px;
+      background: rgba(15, 23, 42, 0.03);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+    }
+
+    .share-preview-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #64748b;
+      margin-bottom: 6px;
+    }
+
+    .share-preview-text {
+      font-size: 0.86rem;
+      color: #0f172a;
+      white-space: pre-wrap;
     }
 
     @media (max-width: 520px) {
@@ -347,7 +374,6 @@
 <body>
   <div class="app-shell">
     <div class="logo-row">
-      <!-- You can change this filename if needed -->
       <img src="uproot-clean-logo.png" alt="Uproot Clean Logo" />
     </div>
 
@@ -394,7 +420,7 @@
 
         <canvas id="gameCanvas" width="360" height="480"></canvas>
         <div class="game-help">
-          Move the basket with your mouse or arrow keys. Catch as many balls as you can!
+          Move the basket with your mouse, arrow keys, or finger. Catch as many balls as you can!
         </div>
       </div>
     </div>
@@ -439,7 +465,7 @@
           </div>
         </div>
 
-        <!-- Q4 NEW -->
+        <!-- Q4 -->
         <div class="question-block">
           <div class="question-label">Do you have a dog or cat?</div>
           <div class="option-row" data-question="petType">
@@ -450,7 +476,7 @@
           </div>
         </div>
 
-        <!-- Q5 NEW -->
+        <!-- Q5 -->
         <div class="question-block">
           <div class="question-label">How important is a clean / fresh home?</div>
           <div class="scale-row" data-question="cleanScore">
@@ -461,7 +487,7 @@
             <button class="scale-pill" data-value="5">5</button>
           </div>
           <div style="font-size:0.75rem;color:#9ca3af;margin-top:4px;">
-            1 = “Nice to have” &nbsp;&middot;&nbsp; 5 = “Non-negotiable”
+            1 = “Nice to have” · 5 = “Non-negotiable”
           </div>
         </div>
 
@@ -484,7 +510,14 @@
           Reward description here
         </div>
         <div class="result-tagline">
-          Copy your result and paste it to your agent so they can apply your reward to your order.
+          Copy the message below and send it back to your agent so they can apply your reward.
+        </div>
+
+        <div class="share-preview">
+          <div class="share-preview-label">Share-ready message</div>
+          <div id="shareTextPreview" class="share-preview-text">
+            <!-- Filled by JS -->
+          </div>
         </div>
 
         <div class="btn-stack">
@@ -492,7 +525,7 @@
             Play again (demo)
           </button>
           <button class="primary-btn" id="shareBtn">
-            Copy &amp; share with your agent
+            Copy & share with your agent
           </button>
         </div>
       </div>
@@ -532,14 +565,13 @@
     let gameRunning = false;
     let lastTimestamp = 0;
 
-    // Bucket width reduced to ~4/5 previous assumption
-    const BASKET_BASE_WIDTH = 70;
+    const BASKET_BASE_WIDTH = 70; // already set to narrower width
 
     function initPegs() {
       pegs = [];
       topRowPegXs = [];
 
-      const rows = 6; // one extra row for more difficulty
+      const rows = 6; // extra row for difficulty
       const cols = 7;
       const pegRadius = 6;
       const verticalSpacing = 52;
@@ -569,7 +601,6 @@
       caughtStat.textContent = "Caught: 0";
       leftStat.textContent = "Drops left: " + TOTAL_BALLS;
 
-      // Basket
       const basketWidth = BASKET_BASE_WIDTH;
       basket = {
         width: basketWidth,
@@ -595,7 +626,6 @@
 
       const ballRadius = 8;
 
-      // Start ball directly above a random peg in the top row
       const startX =
         topRowPegXs.length > 0
           ? topRowPegXs[Math.floor(Math.random() * topRowPegXs.length)]
@@ -612,7 +642,6 @@
 
     function endGame() {
       gameRunning = false;
-      // short delay then go to questions
       setTimeout(() => {
         showScreen("questions");
       }, 550);
@@ -621,15 +650,14 @@
     function updateBallPhysics(delta) {
       if (!ball) return;
 
-      const gravity = 0.26; // slightly toned down so it's not too wild
+      const gravity = 0.26;
       const damping = 0.82;
 
-      // basic gravity
       ball.vy += gravity;
       ball.x += ball.vx;
       ball.y += ball.vy;
 
-      // wall collisions
+      // walls
       if (ball.x - ball.radius < 0) {
         ball.x = ball.radius;
         ball.vx = -ball.vx * damping;
@@ -638,7 +666,7 @@
         ball.vx = -ball.vx * damping;
       }
 
-      // peg collisions
+      // pegs
       for (const peg of pegs) {
         const dx = ball.x - peg.x;
         const dy = ball.y - peg.y;
@@ -646,7 +674,6 @@
         const minDist = ball.radius + peg.radius;
 
         if (dist < minDist && dist > 0) {
-          // resolve overlap
           const overlap = minDist - dist;
           const nx = dx / dist;
           const ny = dy / dist;
@@ -654,7 +681,6 @@
           ball.x += nx * (overlap + 0.2);
           ball.y += ny * (overlap + 0.2);
 
-          // reflect velocity
           const dot = ball.vx * nx + ball.vy * ny;
           ball.vx = ball.vx - 2 * dot * nx;
           ball.vy = ball.vy - 2 * dot * ny;
@@ -662,12 +688,11 @@
           ball.vx *= damping;
           ball.vy *= damping;
 
-          // add a smidge of randomness so paths vary
           ball.vx += (Math.random() - 0.5) * 0.4;
         }
       }
 
-      // basket catch check
+      // basket catch
       if (
         ball.y + ball.radius >= basket.y &&
         ball.y + ball.radius <= basket.y + basket.height + 2 &&
@@ -695,10 +720,8 @@
     }
 
     function drawGame() {
-      // clear
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // soft background gradient already via CSS, but we can add subtle overlay
       const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
       grad.addColorStop(0, "rgba(255,255,255,0.4)");
       grad.addColorStop(1, "rgba(255,255,255,0)");
@@ -742,7 +765,6 @@
       ctx.closePath();
       ctx.fill();
 
-      // inner line
       ctx.strokeStyle = "rgba(248,250,252,0.8)";
       ctx.lineWidth = 2;
       ctx.beginPath();
@@ -780,13 +802,12 @@
         updateBallPhysics(delta);
         drawGame();
       } else if (screens.game.classList.contains("active")) {
-        drawGame(); // keep static drawing
+        drawGame();
       }
 
       requestAnimationFrame(gameLoop);
     }
 
-    // Basket control
     function moveBasket(dx) {
       if (!basket) return;
       basket.x += dx;
@@ -806,7 +827,7 @@
       }
     });
 
-    // Desktop control
+    // Desktop mouse control
     canvas.addEventListener("mousemove", (e) => {
       if (!screens.game.classList.contains("active")) return;
       if (!basket) return;
@@ -822,11 +843,11 @@
     // Mobile control (drag to move)
     function handleTouchMove(e) {
       e.preventDefault();
+      if (!screens.game.classList.contains("active")) return;
+      if (!basket) return;
 
       const rect = canvas.getBoundingClientRect();
       const touch = e.touches[0];
-
-      // Convert touch position to actual canvas coordinate system
       const scaleX = canvas.width / rect.width;
       const canvasX = (touch.clientX - rect.left) * scaleX;
 
@@ -870,81 +891,89 @@
     wireOptionGroup("petType", ".option-row", "option-pill");
     wireOptionGroup("cleanScore", ".scale-row", "scale-pill");
 
+    let lastShareMessage = "";
+
     function computeRewardText() {
       let headline = "";
       let sub = "";
+      let rewardLabel = "";
 
-      // Everyone gets at least 5% off.
-      // 0–1 catches  → 5% off
-      // 2–3 catches  → 10% off
-      // 4–5 catches  → 10% off + free shipping
+      // New reward tiers:
+      // 0–1 catches => 5% Off
+      // 2–3 catches => 10% Off
+      // 4–5 catches => 10% Off + Free Shipping
       if (ballsCaught <= 1) {
-        headline = "You unlocked 5% off 🎉";
+        rewardLabel = "5% Off";
+        headline = "You unlocked 5% Off 🎁";
         sub =
-          "Nice try! Your skill still unlocked 5% off your next clean-home order. Free shipping is waiting if you catch more next time.";
+          "Nice try. You still unlocked 5% off your next clean-home order. Your agent will apply it when you text them this result.";
       } else if (ballsCaught <= 3) {
-        headline = "You unlocked 10% off ✨";
+        rewardLabel = "10% Off";
+        headline = "You unlocked 10% Off ✨";
         sub =
-          "Solid catching skills. Enjoy 10% off your next order. Your agent will apply it when you share this result with them.";
+          "Solid catching skills. You unlocked 10% off your next order. Share your result with your agent so they can apply it.";
       } else {
+        rewardLabel = "10% Off + Free Shipping";
         headline = "10% Off + Free Shipping 🏆";
         sub =
-          "You crushed it. You unlocked 10% off plus free shipping on your next order. Share this result with your agent so they can apply it.";
+          "You crushed it. You unlocked 10% off plus free shipping on your next order. Share your result so your agent can lock it in.";
       }
 
-      return { headline, sub };
+      return { headline, sub, rewardLabel };
+    }
+
+    function buildShareMessage(rewardLabel) {
+      return (
+        "Uproot Catch & Clean result: I caught " +
+        ballsCaught +
+        " of 5 drops and unlocked: " +
+        rewardLabel +
+        ".\n\n" +
+        "Share this with your agent so they can apply the reward to your order."
+      );
     }
 
     // --------- EVENT WIRING ----------
     document.getElementById("startGameBtn").addEventListener("click", () => {
       showScreen("game");
       resetGameState();
-      createNewBall(); // auto-start: no buttons
+      createNewBall();
     });
 
     document.getElementById("submitAnswersBtn").addEventListener("click", () => {
-      // (Optional) validate answers here if you want to require everything
-      const { headline, sub } = computeRewardText();
+      const { headline, sub, rewardLabel } = computeRewardText();
       document.getElementById("rewardHeadline").textContent = headline;
       document.getElementById("rewardSub").textContent = sub;
 
-      // This is where you'd send answerState + ballsCaught into your backend
-      // to store as PI / preferences against the user profile.
+      lastShareMessage = buildShareMessage(rewardLabel);
+      document.getElementById("shareTextPreview").textContent = lastShareMessage;
 
+      // Here is where you'd send answerState + ballsCaught to your backend.
       showScreen("result");
     });
 
     document.getElementById("playDemoBtn").addEventListener("click", () => {
-      // Demo replay: does NOT change rewards, just lets them feel the game again
       showScreen("game");
       resetGameState();
       createNewBall();
     });
 
-    document.getElementById("shareBtn").addEventListener("click", () => {
-      // Build a short message that includes how many drops they caught and what they unlocked.
-      const { headline } = computeRewardText();
-      const copyText =
-        `Uproot Catch & Clean result: I caught ${ballsCaught} of ${TOTAL_BALLS} drops and unlocked: ${headline}.` +
-        "\n\nShare this with your agent so they can apply the reward to your order.";
+    document.getElementById("shareBtn").addEventListener("click", async () => {
+      const textToCopy = lastShareMessage || buildShareMessage("5% Off");
 
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard
-          .writeText(copyText)
-          .then(() => {
-            alert("Copied! Paste this message in your chat with your agent.");
-          })
-          .catch(() => {
-            // Fallback: show the text so they can copy manually.
-            alert(copyText);
-          });
+        try {
+          await navigator.clipboard.writeText(textToCopy);
+          alert("Message copied. Paste this into your text thread with your agent.");
+        } catch (err) {
+          console.error(err);
+          window.prompt("Copy this message:", textToCopy);
+        }
       } else {
-        // Older browsers: just show the text.
-        alert(copyText);
+        window.prompt("Copy this message:", textToCopy);
       }
     });
 
-    // Start the render loop
     requestAnimationFrame(gameLoop);
   </script>
 </body>

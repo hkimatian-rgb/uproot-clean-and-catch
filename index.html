@@ -1,967 +1,951 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2487.6">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Uproot Catch & Clean</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle at top, #fdfbff 0%, #d9f3ff 40%, #b8e0ff 100%);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #0f172a;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 480px;
+      background: rgba(255, 255, 255, 0.96);
+      border-radius: 24px;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.2);
+      padding: 20px 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .logo-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-bottom: 4px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    .logo-row img {
+      max-width: 170px; /* smaller logo */
+      height: auto;
+      object-fit: contain;
+    }
+
+    .screen {
+      display: none;
+      animation: fadeIn 220ms ease-out;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .intro-card {
+      text-align: center;
+      padding: 12px 4px 4px;
+    }
+
+    .eyebrow {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #38bdf8;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .title {
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      color: #64748b;
+      margin-bottom: 16px;
+    }
+
+    .reward-pills {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .reward-pill {
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      background: rgba(56, 189, 248, 0.08);
+      color: #0369a1;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .reward-pill span.icon {
+      font-size: 0.92rem;
+    }
+
+    .primary-btn,
+    .secondary-btn,
+    .ghost-btn {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.96rem;
+      font-weight: 600;
+      transition: transform 80ms ease, box-shadow 80ms ease, background 120ms ease, color 120ms ease;
+    }
+
+    .primary-btn {
+      background: linear-gradient(135deg, #0ea5e9, #22c55e);
+      color: #f8fafc;
+      box-shadow: 0 12px 25px rgba(34, 197, 94, 0.35);
+    }
+
+    .primary-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 30px rgba(34, 197, 94, 0.45);
+    }
+
+    .secondary-btn {
+      background: rgba(15, 23, 42, 0.03);
+      color: #0f172a;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      box-shadow: 0 6px 12px rgba(15, 23, 42, 0.08);
+    }
+
+    .secondary-btn:hover {
+      background: rgba(15, 23, 42, 0.06);
+      transform: translateY(-1px);
+    }
+
+    .ghost-btn {
+      background: transparent;
+      color: #0369a1;
+      border: none;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      font-weight: 500;
+      box-shadow: none;
+      padding-top: 6px;
+      padding-bottom: 6px;
+    }
+
+    .ghost-btn:hover {
+      color: #0ea5e9;
+    }
+
+    .btn-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    /* GAME SCREEN */
+
+    .game-shell {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .game-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.86rem;
+      color: #64748b;
+    }
+
+    .badge {
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, 0.1);
+      color: #0369a1;
+      font-weight: 600;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .game-stats {
+      display: flex;
+      gap: 10px;
+    }
+
+    .stat-chip {
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.03);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    canvas {
+      width: 100%;
+      max-width: 440px;
+      aspect-ratio: 3 / 4;
+      border-radius: 18px;
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      background: linear-gradient(to bottom, #f0f9ff 0%, #e0f2fe 30%, #dcfce7 100%);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+      display: block;
+      margin-inline: auto;
+      touch-action: none;
+    }
+
+    .game-help {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      text-align: center;
+      margin-top: 4px;
+    }
+
+    /* QUESTIONS */
+
+    .questions-card {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 0.9rem;
+    }
+
+    .questions-card h2 {
+      font-size: 1.2rem;
+      margin-bottom: 4px;
+    }
+
+    .question-block {
+      padding: 10px 10px 8px;
+      border-radius: 14px;
+      background: rgba(248, 250, 252, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    .question-label {
+      font-weight: 600;
+      font-size: 0.85rem;
+      margin-bottom: 6px;
+      color: #0f172a;
+    }
+
+    .option-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .option-pill {
+      padding: 5px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: white;
+      font-size: 0.78rem;
+      cursor: pointer;
+      color: #475569;
+    }
+
+    .option-pill.selected {
+      background: linear-gradient(135deg, #0ea5e9, #22c55e);
+      border-color: transparent;
+      color: #f9fafb;
+      box-shadow: 0 6px 14px rgba(34, 197, 94, 0.45);
+    }
+
+    .scale-row {
+      display: flex;
+      gap: 6px;
+    }
+
+    .scale-pill {
+      width: 32px;
+      padding: 6px 0;
+      text-align: center;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: white;
+      font-size: 0.8rem;
+      cursor: pointer;
+      color: #475569;
+    }
+
+    .scale-pill.selected {
+      background: linear-gradient(135deg, #0ea5e9, #22c55e);
+      border-color: transparent;
+      color: #f9fafb;
+      box-shadow: 0 6px 14px rgba(34, 197, 94, 0.45);
+    }
+
+    /* RESULT */
+
+    .result-card {
+      text-align: center;
+      padding: 8px 4px 0;
+    }
+
+    .reward-highlight {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: #0f172a;
+    }
+
+    .reward-sub {
+      font-size: 0.9rem;
+      color: #64748b;
+      margin-bottom: 14px;
+    }
+
+    .result-tagline {
+      font-size: 0.78rem;
+      color: #94a3b8;
+      margin-bottom: 12px;
+    }
+
+    @media (max-width: 520px) {
+      .app-shell {
+        margin: 10px;
+        border-radius: 18px;
+        padding: 16px 14px 18px;
+      }
+    }
   </style>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html lang="en"&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta charset="UTF-8" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;title&gt;Uproot Catch &amp; Clean&lt;/title&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;style&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>* {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>box-sizing: border-box;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin: 0;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding: 0;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>body {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>min-height: 100vh;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>justify-content: center;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>align-items: center;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: radial-gradient(circle at top, #fdfbff 0%, #d9f3ff 40%, #b8e0ff 100%);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: #0f172a;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.app-shell {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>width: 100%;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>max-width: 480px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: rgba(255, 255, 255, 0.96);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 24px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>box-shadow: 0 18px 45px rgba(15, 23, 42, 0.2);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding: 20px 20px 24px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>flex-direction: column;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>gap: 16px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.logo-row {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>justify-content: center;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>align-items: center;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding-bottom: 4px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border-bottom: 1px solid rgba(148, 163, 184, 0.4);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.logo-row img {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>max-width: 170px; /* smaller logo */</p>
-<p class="p1"><span class="Apple-converted-space">      </span>height: auto;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>object-fit: contain;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.screen {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display: none;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>animation: fadeIn 220ms ease-out;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.screen.active {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display: block;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>@keyframes fadeIn {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>from { opacity: 0; transform: translateY(4px); }</p>
-<p class="p1"><span class="Apple-converted-space">      </span>to <span class="Apple-converted-space">  </span>{ opacity: 1; transform: translateY(0); }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.intro-card {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>text-align: center;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding: 12px 4px 4px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.eyebrow {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: 0.78rem;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>text-transform: uppercase;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>letter-spacing: 0.12em;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: #38bdf8;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 600;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin-bottom: 6px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.title {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: 1.45rem;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 700;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: #0f172a;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin-bottom: 4px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.subtitle {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: 0.95rem;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: #64748b;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin-bottom: 16px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.reward-pills {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>flex-wrap: wrap;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>justify-content: center;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>gap: 8px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin-bottom: 18px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.reward-pill {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding: 6px 10px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 999px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: 0.78rem;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: rgba(56, 189, 248, 0.08);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: #0369a1;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid rgba(56, 189, 248, 0.35);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display: inline-flex;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>align-items: center;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>gap: 4px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.reward-pill span.icon {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: 0.92rem;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.primary-btn,</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.secondary-btn,</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.ghost-btn {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>width: 100%;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding: 11px 14px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 999px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border: none;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>cursor: pointer;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: 0.96rem;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 600;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>transition: transform 80ms ease, box-shadow 80ms ease, background 120ms ease, color 120ms ease;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.primary-btn {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: linear-gradient(135deg, #0ea5e9, #22c55e);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: #f8fafc;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>box-shadow: 0 12px 25px rgba(34, 197, 94, 0.35);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.primary-btn:hover {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>transform: translateY(-1px);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>box-shadow: 0 16px 30px rgba(34, 197, 94, 0.45);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.secondary-btn {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: rgba(15, 23, 42, 0.03);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: #0f172a;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid rgba(148, 163, 184, 0.5);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>box-shadow: 0 6px 12px rgba(15, 23, 42, 0.08);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.secondary-btn:hover {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: rgba(15, 23, 42, 0.06);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>transform: translateY(-1px);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.ghost-btn {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: transparent;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: #0369a1;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border: none;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>text-decoration: underline;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>text-underline-offset: 3px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 500;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>box-shadow: none;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding-top: 6px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding-bottom: 6px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.ghost-btn:hover {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: #0ea5e9;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.btn-stack {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>flex-direction: column;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>gap: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin-top: 4px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>/* GAME SCREEN */</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.game-shell {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>flex-direction: column;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>gap: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.game-header {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>justify-content: space-between;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>align-items: center;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: 0.86rem;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: #64748b;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.badge {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding: 3px 8px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 999px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: rgba(56, 189, 248, 0.1);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: #0369a1;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 600;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: 0.7rem;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>letter-spacing: 0.08em;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>text-transform: uppercase;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.game-stats {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>gap: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.stat-chip {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding: 4px 8px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 999px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: rgba(15, 23, 42, 0.03);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid rgba(148, 163, 184, 0.4);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: 0.8rem;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>align-items: center;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>gap: 4px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>canvas {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>width: 100%;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>max-width: 440px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>aspect-ratio: 3 / 4;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 18px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid rgba(148, 163, 184, 0.55);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: linear-gradient(to bottom, #f0f9ff 0%, #e0f2fe 30%, #dcfce7 100%);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display: block;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin-inline: auto;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>touch-action: none;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.game-help {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: 0.8rem;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: #94a3b8;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>text-align: center;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin-top: 4px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>/* QUESTIONS */</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.questions-card {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>flex-direction: column;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>gap: 12px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: 0.9rem;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.questions-card h2 {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: 1.2rem;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin-bottom: 4px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.question-block {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding: 10px 10px 8px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 14px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: rgba(248, 250, 252, 0.9);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid rgba(148, 163, 184, 0.4);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.question-label {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 600;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: 0.85rem;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin-bottom: 6px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: #0f172a;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.option-row {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>flex-wrap: wrap;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>gap: 6px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.option-pill {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding: 5px 9px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 999px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid rgba(148, 163, 184, 0.6);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: white;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: 0.78rem;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>cursor: pointer;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: #475569;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.option-pill.selected {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: linear-gradient(135deg, #0ea5e9, #22c55e);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border-color: transparent;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: #f9fafb;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>box-shadow: 0 6px 14px rgba(34, 197, 94, 0.45);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.scale-row {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>gap: 6px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.scale-pill {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>width: 32px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding: 6px 0;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>text-align: center;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 999px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid rgba(148, 163, 184, 0.6);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: white;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: 0.8rem;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>cursor: pointer;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: #475569;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.scale-pill.selected {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: linear-gradient(135deg, #0ea5e9, #22c55e);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border-color: transparent;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: #f9fafb;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>box-shadow: 0 6px 14px rgba(34, 197, 94, 0.45);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>/* RESULT */</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.result-card {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>text-align: center;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding: 8px 4px 0;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.reward-highlight {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: 1.25rem;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 700;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin-bottom: 4px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: #0f172a;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.reward-sub {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: 0.9rem;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: #64748b;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin-bottom: 14px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.result-tagline {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: 0.78rem;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: #94a3b8;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin-bottom: 12px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>@media (max-width: 520px) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>.app-shell {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>margin: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>border-radius: 18px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>padding: 16px 14px 18px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="app-shell"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="logo-row"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;!-- You can change this filename if needed --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;img src="uproot-clean-logo.png" alt="Uproot Clean Logo" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- INTRO SCREEN --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="screen-intro" class="screen active"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="intro-card"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="eyebrow"&gt;Uproot Catch &amp; Clean&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="title"&gt;Catch &amp; win your clean-laundry upgrade&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="subtitle"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>Play a quick 5-ball drop game to unlock&lt;span style="white-space:nowrap;"&gt; free shipping&lt;/span&gt; and</p>
-<p class="p1"><span class="Apple-converted-space">          </span>extra savings on your next clean-home routine.</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="reward-pills"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="reward-pill"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;span class="icon"&gt;🚚&lt;/span&gt; Free shipping</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="reward-pill"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;span class="icon"&gt;✨&lt;/span&gt; Up to 10% extra off</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="reward-pill"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;span class="icon"&gt;⏱️&lt;/span&gt; 30 seconds, 5 drops</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="btn-stack"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;button class="primary-btn" id="startGameBtn"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>Play now &amp; unlock your reward</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- GAME SCREEN --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="screen-game" class="screen"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="game-shell"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="game-header"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;span class="badge"&gt;Skill game&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="game-stats"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="stat-chip" id="caughtStat"&gt;Caught: 0&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="stat-chip" id="leftStat"&gt;Drops left: 5&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;canvas id="gameCanvas" width="360" height="480"&gt;&lt;/canvas&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="game-help"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>Move the basket with your mouse or arrow keys. Catch as many balls as you can!</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- QUESTIONS SCREEN --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="screen-questions" class="screen"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="questions-card"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="eyebrow"&gt;Just a few quick taps&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;h2&gt;Tell us about your laundry life&lt;/h2&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;p class="subtitle" style="margin-bottom: 10px;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>We will use this to recommend better routines and future rewards that actually fit your home.</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- Q1 --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="question-block"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="question-label"&gt;Do you have pets?&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="option-row" data-question="pets"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="option-pill" data-value="yes"&gt;Yes&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="option-pill" data-value="no"&gt;No&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- Q2 --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="question-block"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="question-label"&gt;What type of washing machine do you use?&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="option-row" data-question="machine"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="option-pill" data-value="top"&gt;Top loader&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="option-pill" data-value="front"&gt;Front loader&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- Q3 --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="question-block"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="question-label"&gt;What is your biggest laundry frustration?&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="option-row" data-question="frustration"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="option-pill" data-value="smell"&gt;Smell&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="option-pill" data-value="stains"&gt;Stains&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="option-pill" data-value="time"&gt;Time&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="option-pill" data-value="petHair"&gt;Pet hair&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- Q4 NEW --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="question-block"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="question-label"&gt;Do you have a dog or cat?&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="option-row" data-question="petType"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="option-pill" data-value="dog"&gt;Dog&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="option-pill" data-value="cat"&gt;Cat&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="option-pill" data-value="both"&gt;Both&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="option-pill" data-value="neither"&gt;Neither&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- Q5 NEW --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="question-block"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="question-label"&gt;How important is a clean / fresh home?&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="scale-row" data-question="cleanScore"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="scale-pill" data-value="1"&gt;1&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="scale-pill" data-value="2"&gt;2&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="scale-pill" data-value="3"&gt;3&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="scale-pill" data-value="4"&gt;4&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="scale-pill" data-value="5"&gt;5&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;div style="font-size:0.75rem;color:#9ca3af;margin-top:4px;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>1 = “Nice to have” &amp;nbsp;&amp;middot;&amp;nbsp; 5 = “Non-negotiable”</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="btn-stack" style="margin-top: 6px;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;button class="primary-btn" id="submitAnswersBtn"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>Lock in my reward</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- RESULT SCREEN --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="screen-result" class="screen"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="result-card"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="eyebrow"&gt;Nice catch&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="rewardHeadline" class="reward-highlight"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>Reward headline here</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="rewardSub" class="reward-sub"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>Reward description here</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="result-tagline"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>Copy your result and paste it to your agent so they can apply your reward to your order.</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="btn-stack"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;button class="secondary-btn" id="playDemoBtn"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>Play again (demo)</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;button class="primary-btn" id="shareBtn"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>Copy &amp;amp; share with your agent</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>// --------- SCREEN HANDLING ----------</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const screens = {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>intro: document.getElementById("screen-intro"),</p>
-<p class="p1"><span class="Apple-converted-space">      </span>game: document.getElementById("screen-game"),</p>
-<p class="p1"><span class="Apple-converted-space">      </span>questions: document.getElementById("screen-questions"),</p>
-<p class="p1"><span class="Apple-converted-space">      </span>result: document.getElementById("screen-result"),</p>
-<p class="p1"><span class="Apple-converted-space">    </span>};</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function showScreen(name) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>Object.values(screens).forEach((el) =&gt; el.classList.remove("active"));</p>
-<p class="p1"><span class="Apple-converted-space">      </span>screens[name].classList.add("active");</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// --------- GAME LOGIC ----------</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const canvas = document.getElementById("gameCanvas");</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const ctx = canvas.getContext("2d");</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>const caughtStat = document.getElementById("caughtStat");</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const leftStat = document.getElementById("leftStat");</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>const TOTAL_BALLS = 5;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>let ballsCaught = 0;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>let ballsUsed = 0;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>let ball = null;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>let basket = null;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>let pegs = [];</p>
-<p class="p1"><span class="Apple-converted-space">    </span>let topRowPegXs = [];</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>let gameRunning = false;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>let lastTimestamp = 0;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Bucket width reduced to ~4/5 previous assumption</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const BASKET_BASE_WIDTH = 70;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function initPegs() {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>pegs = [];</p>
-<p class="p1"><span class="Apple-converted-space">      </span>topRowPegXs = [];</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>const rows = 6; // one extra row for more difficulty</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const cols = 7;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const pegRadius = 6;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const verticalSpacing = 52;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const horizontalSpacing = 46;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const topOffset = 60;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const sideMargin = 40;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>for (let r = 0; r &lt; rows; r++) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const y = topOffset + r * verticalSpacing;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const staggerOffset = (r % 2 === 0) ? 0 : horizontalSpacing / 2;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>for (let c = 0; c &lt; cols; c++) {</p>
-<p class="p1"><span class="Apple-converted-space">          </span>let x = sideMargin + c * horizontalSpacing + staggerOffset;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>if (x &lt; pegRadius + 8 || x &gt; canvas.width - pegRadius - 8) continue;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">          </span>pegs.push({ x, y, radius: pegRadius });</p>
-<p class="p1"><span class="Apple-converted-space">          </span>if (r === 0) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>topRowPegXs.push(x);</p>
-<p class="p1"><span class="Apple-converted-space">          </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function resetGameState() {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ballsCaught = 0;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ballsUsed = 0;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>caughtStat.textContent = "Caught: 0";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>leftStat.textContent = "Drops left: " + TOTAL_BALLS;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>// Basket</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const basketWidth = BASKET_BASE_WIDTH;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>basket = {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>width: basketWidth,</p>
-<p class="p1"><span class="Apple-converted-space">        </span>height: 14,</p>
-<p class="p1"><span class="Apple-converted-space">        </span>x: (canvas.width - basketWidth) / 2,</p>
-<p class="p1"><span class="Apple-converted-space">        </span>y: canvas.height - 40,</p>
-<p class="p1"><span class="Apple-converted-space">        </span>speed: 6,</p>
-<p class="p1"><span class="Apple-converted-space">      </span>};</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>initPegs();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ball = null;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>gameRunning = true;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function createNewBall() {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (ballsUsed &gt;= TOTAL_BALLS) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>endGame();</p>
-<p class="p1"><span class="Apple-converted-space">        </span>return;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>ballsUsed++;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>leftStat.textContent = "Drops left: " + (TOTAL_BALLS - ballsUsed);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>const ballRadius = 8;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>// Start ball directly above a random peg in the top row</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const startX =</p>
-<p class="p1"><span class="Apple-converted-space">        </span>topRowPegXs.length &gt; 0</p>
-<p class="p1"><span class="Apple-converted-space">          </span>? topRowPegXs[Math.floor(Math.random() * topRowPegXs.length)]</p>
-<p class="p1"><span class="Apple-converted-space">          </span>: canvas.width / 2;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>ball = {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>x: startX,</p>
-<p class="p1"><span class="Apple-converted-space">        </span>y: 20,</p>
-<p class="p1"><span class="Apple-converted-space">        </span>vx: 0,</p>
-<p class="p1"><span class="Apple-converted-space">        </span>vy: 0.5,</p>
-<p class="p1"><span class="Apple-converted-space">        </span>radius: ballRadius,</p>
-<p class="p1"><span class="Apple-converted-space">      </span>};</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function endGame() {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>gameRunning = false;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>// short delay then go to questions</p>
-<p class="p1"><span class="Apple-converted-space">      </span>setTimeout(() =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>showScreen("questions");</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}, 550);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function updateBallPhysics(delta) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (!ball) return;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>const gravity = 0.26; // slightly toned down so it's not too wild</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const damping = 0.82;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>// basic gravity</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ball.vy += gravity;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ball.x += ball.vx;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ball.y += ball.vy;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>// wall collisions</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (ball.x - ball.radius &lt; 0) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>ball.x = ball.radius;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>ball.vx = -ball.vx * damping;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>} else if (ball.x + ball.radius &gt; canvas.width) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>ball.x = canvas.width - ball.radius;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>ball.vx = -ball.vx * damping;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>// peg collisions</p>
-<p class="p1"><span class="Apple-converted-space">      </span>for (const peg of pegs) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const dx = ball.x - peg.x;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const dy = ball.y - peg.y;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const dist = Math.sqrt(dx * dx + dy * dy);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const minDist = ball.radius + peg.radius;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>if (dist &lt; minDist &amp;&amp; dist &gt; 0) {</p>
-<p class="p1"><span class="Apple-converted-space">          </span>// resolve overlap</p>
-<p class="p1"><span class="Apple-converted-space">          </span>const overlap = minDist - dist;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>const nx = dx / dist;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>const ny = dy / dist;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">          </span>ball.x += nx * (overlap + 0.2);</p>
-<p class="p1"><span class="Apple-converted-space">          </span>ball.y += ny * (overlap + 0.2);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">          </span>// reflect velocity</p>
-<p class="p1"><span class="Apple-converted-space">          </span>const dot = ball.vx * nx + ball.vy * ny;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>ball.vx = ball.vx - 2 * dot * nx;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>ball.vy = ball.vy - 2 * dot * ny;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">          </span>ball.vx *= damping;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>ball.vy *= damping;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">          </span>// add a smidge of randomness so paths vary</p>
-<p class="p1"><span class="Apple-converted-space">          </span>ball.vx += (Math.random() - 0.5) * 0.4;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>// basket catch check</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (</p>
-<p class="p1"><span class="Apple-converted-space">        </span>ball.y + ball.radius &gt;= basket.y &amp;&amp;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>ball.y + ball.radius &lt;= basket.y + basket.height + 2 &amp;&amp;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>ball.x &gt;= basket.x &amp;&amp;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>ball.x &lt;= basket.x + basket.width &amp;&amp;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>ball.vy &gt; 0</p>
-<p class="p1"><span class="Apple-converted-space">      </span>) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>ballsCaught++;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>caughtStat.textContent = "Caught: " + ballsCaught;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>ball = null;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>setTimeout(() =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">          </span>createNewBall();</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}, 400);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>return;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>// fell below</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (ball.y - ball.radius &gt; canvas.height + 10) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>ball = null;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>setTimeout(() =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">          </span>createNewBall();</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}, 400);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function drawGame() {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>// clear</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.clearRect(0, 0, canvas.width, canvas.height);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>// soft background gradient already via CSS, but we can add subtle overlay</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>grad.addColorStop(0, "rgba(255,255,255,0.4)");</p>
-<p class="p1"><span class="Apple-converted-space">      </span>grad.addColorStop(1, "rgba(255,255,255,0)");</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.fillStyle = grad;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.fillRect(0, 0, canvas.width, canvas.height);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>// pegs</p>
-<p class="p1"><span class="Apple-converted-space">      </span>for (const peg of pegs) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>ctx.beginPath();</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const outerGrad = ctx.createRadialGradient(</p>
-<p class="p1"><span class="Apple-converted-space">          </span>peg.x - 1,</p>
-<p class="p1"><span class="Apple-converted-space">          </span>peg.y - 1,</p>
-<p class="p1"><span class="Apple-converted-space">          </span>1,</p>
-<p class="p1"><span class="Apple-converted-space">          </span>peg.x,</p>
-<p class="p1"><span class="Apple-converted-space">          </span>peg.y,</p>
-<p class="p1"><span class="Apple-converted-space">          </span>peg.radius + 1</p>
-<p class="p1"><span class="Apple-converted-space">        </span>);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>outerGrad.addColorStop(0, "#e0f2fe");</p>
-<p class="p1"><span class="Apple-converted-space">        </span>outerGrad.addColorStop(1, "#0ea5e9");</p>
-<p class="p1"><span class="Apple-converted-space">        </span>ctx.fillStyle = outerGrad;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>ctx.arc(peg.x, peg.y, peg.radius, 0, Math.PI * 2);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>ctx.fill();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>// basket</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.save();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.fillStyle = "#0f172a";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.beginPath();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const r = 8;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const bx = basket.x;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const by = basket.y;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const bw = basket.width;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const bh = basket.height;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.moveTo(bx + r, by);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.lineTo(bx + bw - r, by);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.quadraticCurveTo(bx + bw, by, bx + bw, by + r);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.lineTo(bx + bw, by + bh);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.lineTo(bx, by + bh);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.lineTo(bx, by + r);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.quadraticCurveTo(bx, by, bx + r, by);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.closePath();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.fill();</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>// inner line</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.strokeStyle = "rgba(248,250,252,0.8)";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.lineWidth = 2;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.beginPath();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.moveTo(bx + 6, by + 2);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.lineTo(bx + bw - 6, by + 2);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.stroke();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.restore();</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>// ball</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (ball) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>ctx.save();</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const bGrad = ctx.createRadialGradient(</p>
-<p class="p1"><span class="Apple-converted-space">          </span>ball.x - 3,</p>
-<p class="p1"><span class="Apple-converted-space">          </span>ball.y - 3,</p>
-<p class="p1"><span class="Apple-converted-space">          </span>2,</p>
-<p class="p1"><span class="Apple-converted-space">          </span>ball.x,</p>
-<p class="p1"><span class="Apple-converted-space">          </span>ball.y,</p>
-<p class="p1"><span class="Apple-converted-space">          </span>ball.radius + 2</p>
-<p class="p1"><span class="Apple-converted-space">        </span>);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>bGrad.addColorStop(0, "#fefce8");</p>
-<p class="p1"><span class="Apple-converted-space">        </span>bGrad.addColorStop(1, "#facc15");</p>
-<p class="p1"><span class="Apple-converted-space">        </span>ctx.fillStyle = bGrad;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>ctx.beginPath();</p>
-<p class="p1"><span class="Apple-converted-space">        </span>ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>ctx.fill();</p>
-<p class="p1"><span class="Apple-converted-space">        </span>ctx.restore();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function gameLoop(timestamp) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const delta = timestamp - lastTimestamp;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>lastTimestamp = timestamp;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (screens.game.classList.contains("active") &amp;&amp; gameRunning) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>updateBallPhysics(delta);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>drawGame();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>} else if (screens.game.classList.contains("active")) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>drawGame(); // keep static drawing</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>requestAnimationFrame(gameLoop);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Basket control</p>
-<p class="p1"><span class="Apple-converted-space">    </span>function moveBasket(dx) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (!basket) return;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>basket.x += dx;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (basket.x &lt; 0) basket.x = 0;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (basket.x + basket.width &gt; canvas.width) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>basket.x = canvas.width - basket.width;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>document.addEventListener("keydown", (e) =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (!screens.game.classList.contains("active")) return;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (!basket) return;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (e.key === "ArrowLeft") {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>moveBasket(-basket.speed);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>} else if (e.key === "ArrowRight") {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>moveBasket(basket.speed);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Desktop control</p>
-<p class="p1"><span class="Apple-converted-space">    </span>canvas.addEventListener("mousemove", (e) =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (!screens.game.classList.contains("active")) return;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (!basket) return;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const rect = canvas.getBoundingClientRect();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const x = e.clientX - rect.left;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>basket.x = x - basket.width / 2;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (basket.x &lt; 0) basket.x = 0;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (basket.x + basket.width &gt; canvas.width) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>basket.x = canvas.width - basket.width;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Mobile control (drag to move)</p>
-<p class="p1"><span class="Apple-converted-space">    </span>function handleTouchMove(e) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>e.preventDefault();</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>const rect = canvas.getBoundingClientRect();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const touch = e.touches[0];</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>// Convert touch position to actual canvas coordinate system</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const scaleX = canvas.width / rect.width;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const canvasX = (touch.clientX - rect.left) * scaleX;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>basket.x = Math.max(</p>
-<p class="p1"><span class="Apple-converted-space">        </span>0,</p>
-<p class="p1"><span class="Apple-converted-space">        </span>Math.min(canvas.width - basket.width, canvasX - basket.width / 2)</p>
-<p class="p1"><span class="Apple-converted-space">      </span>);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>canvas.addEventListener("touchstart", handleTouchMove, { passive: false });</p>
-<p class="p1"><span class="Apple-converted-space">    </span>canvas.addEventListener("touchmove", handleTouchMove, { passive: false });</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// --------- QUESTIONS / ANSWERS ----------</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const answerState = {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>pets: null,</p>
-<p class="p1"><span class="Apple-converted-space">      </span>machine: null,</p>
-<p class="p1"><span class="Apple-converted-space">      </span>frustration: null,</p>
-<p class="p1"><span class="Apple-converted-space">      </span>petType: null,</p>
-<p class="p1"><span class="Apple-converted-space">      </span>cleanScore: null,</p>
-<p class="p1"><span class="Apple-converted-space">    </span>};</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function wireOptionGroup(questionName, selector, pillClass) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const group = document.querySelector(selector + "[data-question='" + questionName + "']");</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (!group) return;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>group.addEventListener("click", (e) =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const btn = e.target.closest("." + pillClass);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>if (!btn) return;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const value = btn.getAttribute("data-value");</p>
-<p class="p1"><span class="Apple-converted-space">        </span>answerState[questionName] = value;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>Array.from(group.children).forEach((child) =&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>child.classList.remove("selected")</p>
-<p class="p1"><span class="Apple-converted-space">        </span>);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>btn.classList.add("selected");</p>
-<p class="p1"><span class="Apple-converted-space">      </span>});</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>wireOptionGroup("pets", ".option-row", "option-pill");</p>
-<p class="p1"><span class="Apple-converted-space">    </span>wireOptionGroup("machine", ".option-row", "option-pill");</p>
-<p class="p1"><span class="Apple-converted-space">    </span>wireOptionGroup("frustration", ".option-row", "option-pill");</p>
-<p class="p1"><span class="Apple-converted-space">    </span>wireOptionGroup("petType", ".option-row", "option-pill");</p>
-<p class="p1"><span class="Apple-converted-space">    </span>wireOptionGroup("cleanScore", ".scale-row", "scale-pill");</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function computeRewardText() {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>let headline = "";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>let sub = "";</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>// Everyone gets at least 5% off.</p>
-<p class="p1"><span class="Apple-converted-space">      </span>// 0–1 catches<span class="Apple-converted-space">  </span>→ 5% off</p>
-<p class="p1"><span class="Apple-converted-space">      </span>// 2–3 catches<span class="Apple-converted-space">  </span>→ 10% off</p>
-<p class="p1"><span class="Apple-converted-space">      </span>// 4–5 catches<span class="Apple-converted-space">  </span>→ 10% off + free shipping</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (ballsCaught &lt;= 1) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>headline = "You unlocked 5% off 🎉";</p>
-<p class="p1"><span class="Apple-converted-space">        </span>sub =</p>
-<p class="p1"><span class="Apple-converted-space">          </span>"Nice try! Your skill still unlocked 5% off your next clean-home order. Free shipping is waiting if you catch more next time.";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>} else if (ballsCaught &lt;= 3) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>headline = "You unlocked 10% off ✨";</p>
-<p class="p1"><span class="Apple-converted-space">        </span>sub =</p>
-<p class="p1"><span class="Apple-converted-space">          </span>"Solid catching skills. Enjoy 10% off your next order. Your agent will apply it when you share this result with them.";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>headline = "10% Off + Free Shipping 🏆";</p>
-<p class="p1"><span class="Apple-converted-space">        </span>sub =</p>
-<p class="p1"><span class="Apple-converted-space">          </span>"You crushed it. You unlocked 10% off plus free shipping on your next order. Share this result with your agent so they can apply it.";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>return { headline, sub };</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// --------- EVENT WIRING ----------</p>
-<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById("startGameBtn").addEventListener("click", () =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>showScreen("game");</p>
-<p class="p1"><span class="Apple-converted-space">      </span>resetGameState();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>createNewBall(); // auto-start: no buttons</p>
-<p class="p1"><span class="Apple-converted-space">    </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById("submitAnswersBtn").addEventListener("click", () =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>// (Optional) validate answers here if you want to require everything</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const { headline, sub } = computeRewardText();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("rewardHeadline").textContent = headline;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("rewardSub").textContent = sub;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>// This is where you'd send answerState + ballsCaught into your backend</p>
-<p class="p1"><span class="Apple-converted-space">      </span>// to store as PI / preferences against the user profile.</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>showScreen("result");</p>
-<p class="p1"><span class="Apple-converted-space">    </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById("playDemoBtn").addEventListener("click", () =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>// Demo replay: does NOT change rewards, just lets them feel the game again</p>
-<p class="p1"><span class="Apple-converted-space">      </span>showScreen("game");</p>
-<p class="p1"><span class="Apple-converted-space">      </span>resetGameState();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>createNewBall();</p>
-<p class="p1"><span class="Apple-converted-space">    </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById("shareBtn").addEventListener("click", () =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>// Build a short message that includes how many drops they caught and what they unlocked.</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const { headline } = computeRewardText();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const copyText =</p>
-<p class="p1"><span class="Apple-converted-space">        </span>`Uproot Catch &amp; Clean result: I caught ${ballsCaught} of ${TOTAL_BALLS} drops and unlocked: ${headline}.` +</p>
-<p class="p1"><span class="Apple-converted-space">        </span>"\n\nShare this with your agent so they can apply the reward to my order. (Agent: replace this line with the customer's unique link or code.)";</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (navigator.clipboard &amp;&amp; navigator.clipboard.writeText) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>navigator.clipboard</p>
-<p class="p1"><span class="Apple-converted-space">          </span>.writeText(copyText)</p>
-<p class="p1"><span class="Apple-converted-space">          </span>.then(() =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>alert("Copied! Paste this message in your chat with your agent.");</p>
-<p class="p1"><span class="Apple-converted-space">          </span>})</p>
-<p class="p1"><span class="Apple-converted-space">          </span>.catch(() =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>// Fallback: show the text so they can copy manually.</p>
-<p class="p1"><span class="Apple-converted-space">            </span>alert(copyText);</p>
-<p class="p1"><span class="Apple-converted-space">          </span>});</p>
-<p class="p1"><span class="Apple-converted-space">      </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>// Older browsers: just show the text.</p>
-<p class="p1"><span class="Apple-converted-space">        </span>alert(copyText);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Start the render loop</p>
-<p class="p1"><span class="Apple-converted-space">    </span>requestAnimationFrame(gameLoop);</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/script&gt;</p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+  <div class="app-shell">
+    <div class="logo-row">
+      <!-- You can change this filename if needed -->
+      <img src="uproot-clean-logo.png" alt="Uproot Clean Logo" />
+    </div>
+
+    <!-- INTRO SCREEN -->
+    <div id="screen-intro" class="screen active">
+      <div class="intro-card">
+        <div class="eyebrow">Uproot Catch & Clean</div>
+        <div class="title">Catch & win your clean-laundry upgrade</div>
+        <div class="subtitle">
+          Play a quick 5-ball drop game to unlock<span style="white-space:nowrap;"> free shipping</span> and
+          extra savings on your next clean-home routine.
+        </div>
+
+        <div class="reward-pills">
+          <div class="reward-pill">
+            <span class="icon">🚚</span> Free shipping
+          </div>
+          <div class="reward-pill">
+            <span class="icon">✨</span> Up to 10% extra off
+          </div>
+          <div class="reward-pill">
+            <span class="icon">⏱️</span> 30 seconds, 5 drops
+          </div>
+        </div>
+
+        <div class="btn-stack">
+          <button class="primary-btn" id="startGameBtn">
+            Play now & unlock your reward
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- GAME SCREEN -->
+    <div id="screen-game" class="screen">
+      <div class="game-shell">
+        <div class="game-header">
+          <span class="badge">Skill game</span>
+          <div class="game-stats">
+            <div class="stat-chip" id="caughtStat">Caught: 0</div>
+            <div class="stat-chip" id="leftStat">Drops left: 5</div>
+          </div>
+        </div>
+
+        <canvas id="gameCanvas" width="360" height="480"></canvas>
+        <div class="game-help">
+          Move the basket with your mouse or arrow keys. Catch as many balls as you can!
+        </div>
+      </div>
+    </div>
+
+    <!-- QUESTIONS SCREEN -->
+    <div id="screen-questions" class="screen">
+      <div class="questions-card">
+        <div>
+          <div class="eyebrow">Just a few quick taps</div>
+          <h2>Tell us about your laundry life</h2>
+          <p class="subtitle" style="margin-bottom: 10px;">
+            We will use this to recommend better routines and future rewards that actually fit your home.
+          </p>
+        </div>
+
+        <!-- Q1 -->
+        <div class="question-block">
+          <div class="question-label">Do you have pets?</div>
+          <div class="option-row" data-question="pets">
+            <button class="option-pill" data-value="yes">Yes</button>
+            <button class="option-pill" data-value="no">No</button>
+          </div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="question-block">
+          <div class="question-label">What type of washing machine do you use?</div>
+          <div class="option-row" data-question="machine">
+            <button class="option-pill" data-value="top">Top loader</button>
+            <button class="option-pill" data-value="front">Front loader</button>
+          </div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="question-block">
+          <div class="question-label">What is your biggest laundry frustration?</div>
+          <div class="option-row" data-question="frustration">
+            <button class="option-pill" data-value="smell">Smell</button>
+            <button class="option-pill" data-value="stains">Stains</button>
+            <button class="option-pill" data-value="time">Time</button>
+            <button class="option-pill" data-value="petHair">Pet hair</button>
+          </div>
+        </div>
+
+        <!-- Q4 NEW -->
+        <div class="question-block">
+          <div class="question-label">Do you have a dog or cat?</div>
+          <div class="option-row" data-question="petType">
+            <button class="option-pill" data-value="dog">Dog</button>
+            <button class="option-pill" data-value="cat">Cat</button>
+            <button class="option-pill" data-value="both">Both</button>
+            <button class="option-pill" data-value="neither">Neither</button>
+          </div>
+        </div>
+
+        <!-- Q5 NEW -->
+        <div class="question-block">
+          <div class="question-label">How important is a clean / fresh home?</div>
+          <div class="scale-row" data-question="cleanScore">
+            <button class="scale-pill" data-value="1">1</button>
+            <button class="scale-pill" data-value="2">2</button>
+            <button class="scale-pill" data-value="3">3</button>
+            <button class="scale-pill" data-value="4">4</button>
+            <button class="scale-pill" data-value="5">5</button>
+          </div>
+          <div style="font-size:0.75rem;color:#9ca3af;margin-top:4px;">
+            1 = “Nice to have” &nbsp;&middot;&nbsp; 5 = “Non-negotiable”
+          </div>
+        </div>
+
+        <div class="btn-stack" style="margin-top: 6px;">
+          <button class="primary-btn" id="submitAnswersBtn">
+            Lock in my reward
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="screen-result" class="screen">
+      <div class="result-card">
+        <div class="eyebrow">Nice catch</div>
+        <div id="rewardHeadline" class="reward-highlight">
+          Reward headline here
+        </div>
+        <div id="rewardSub" class="reward-sub">
+          Reward description here
+        </div>
+        <div class="result-tagline">
+          Copy your result and paste it to your agent so they can apply your reward to your order.
+        </div>
+
+        <div class="btn-stack">
+          <button class="secondary-btn" id="playDemoBtn">
+            Play again (demo)
+          </button>
+          <button class="primary-btn" id="shareBtn">
+            Copy &amp; share with your agent
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --------- SCREEN HANDLING ----------
+    const screens = {
+      intro: document.getElementById("screen-intro"),
+      game: document.getElementById("screen-game"),
+      questions: document.getElementById("screen-questions"),
+      result: document.getElementById("screen-result"),
+    };
+
+    function showScreen(name) {
+      Object.values(screens).forEach((el) => el.classList.remove("active"));
+      screens[name].classList.add("active");
+    }
+
+    // --------- GAME LOGIC ----------
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const caughtStat = document.getElementById("caughtStat");
+    const leftStat = document.getElementById("leftStat");
+
+    const TOTAL_BALLS = 5;
+    let ballsCaught = 0;
+    let ballsUsed = 0;
+
+    let ball = null;
+    let basket = null;
+    let pegs = [];
+    let topRowPegXs = [];
+
+    let gameRunning = false;
+    let lastTimestamp = 0;
+
+    // Bucket width reduced to ~4/5 previous assumption
+    const BASKET_BASE_WIDTH = 70;
+
+    function initPegs() {
+      pegs = [];
+      topRowPegXs = [];
+
+      const rows = 6; // one extra row for more difficulty
+      const cols = 7;
+      const pegRadius = 6;
+      const verticalSpacing = 52;
+      const horizontalSpacing = 46;
+      const topOffset = 60;
+      const sideMargin = 40;
+
+      for (let r = 0; r < rows; r++) {
+        const y = topOffset + r * verticalSpacing;
+        const staggerOffset = (r % 2 === 0) ? 0 : horizontalSpacing / 2;
+
+        for (let c = 0; c < cols; c++) {
+          let x = sideMargin + c * horizontalSpacing + staggerOffset;
+          if (x < pegRadius + 8 || x > canvas.width - pegRadius - 8) continue;
+
+          pegs.push({ x, y, radius: pegRadius });
+          if (r === 0) {
+            topRowPegXs.push(x);
+          }
+        }
+      }
+    }
+
+    function resetGameState() {
+      ballsCaught = 0;
+      ballsUsed = 0;
+      caughtStat.textContent = "Caught: 0";
+      leftStat.textContent = "Drops left: " + TOTAL_BALLS;
+
+      // Basket
+      const basketWidth = BASKET_BASE_WIDTH;
+      basket = {
+        width: basketWidth,
+        height: 14,
+        x: (canvas.width - basketWidth) / 2,
+        y: canvas.height - 40,
+        speed: 6,
+      };
+
+      initPegs();
+      ball = null;
+      gameRunning = true;
+    }
+
+    function createNewBall() {
+      if (ballsUsed >= TOTAL_BALLS) {
+        endGame();
+        return;
+      }
+
+      ballsUsed++;
+      leftStat.textContent = "Drops left: " + (TOTAL_BALLS - ballsUsed);
+
+      const ballRadius = 8;
+
+      // Start ball directly above a random peg in the top row
+      const startX =
+        topRowPegXs.length > 0
+          ? topRowPegXs[Math.floor(Math.random() * topRowPegXs.length)]
+          : canvas.width / 2;
+
+      ball = {
+        x: startX,
+        y: 20,
+        vx: 0,
+        vy: 0.5,
+        radius: ballRadius,
+      };
+    }
+
+    function endGame() {
+      gameRunning = false;
+      // short delay then go to questions
+      setTimeout(() => {
+        showScreen("questions");
+      }, 550);
+    }
+
+    function updateBallPhysics(delta) {
+      if (!ball) return;
+
+      const gravity = 0.26; // slightly toned down so it's not too wild
+      const damping = 0.82;
+
+      // basic gravity
+      ball.vy += gravity;
+      ball.x += ball.vx;
+      ball.y += ball.vy;
+
+      // wall collisions
+      if (ball.x - ball.radius < 0) {
+        ball.x = ball.radius;
+        ball.vx = -ball.vx * damping;
+      } else if (ball.x + ball.radius > canvas.width) {
+        ball.x = canvas.width - ball.radius;
+        ball.vx = -ball.vx * damping;
+      }
+
+      // peg collisions
+      for (const peg of pegs) {
+        const dx = ball.x - peg.x;
+        const dy = ball.y - peg.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const minDist = ball.radius + peg.radius;
+
+        if (dist < minDist && dist > 0) {
+          // resolve overlap
+          const overlap = minDist - dist;
+          const nx = dx / dist;
+          const ny = dy / dist;
+
+          ball.x += nx * (overlap + 0.2);
+          ball.y += ny * (overlap + 0.2);
+
+          // reflect velocity
+          const dot = ball.vx * nx + ball.vy * ny;
+          ball.vx = ball.vx - 2 * dot * nx;
+          ball.vy = ball.vy - 2 * dot * ny;
+
+          ball.vx *= damping;
+          ball.vy *= damping;
+
+          // add a smidge of randomness so paths vary
+          ball.vx += (Math.random() - 0.5) * 0.4;
+        }
+      }
+
+      // basket catch check
+      if (
+        ball.y + ball.radius >= basket.y &&
+        ball.y + ball.radius <= basket.y + basket.height + 2 &&
+        ball.x >= basket.x &&
+        ball.x <= basket.x + basket.width &&
+        ball.vy > 0
+      ) {
+        ballsCaught++;
+        caughtStat.textContent = "Caught: " + ballsCaught;
+        ball = null;
+
+        setTimeout(() => {
+          createNewBall();
+        }, 400);
+        return;
+      }
+
+      // fell below
+      if (ball.y - ball.radius > canvas.height + 10) {
+        ball = null;
+        setTimeout(() => {
+          createNewBall();
+        }, 400);
+      }
+    }
+
+    function drawGame() {
+      // clear
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // soft background gradient already via CSS, but we can add subtle overlay
+      const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      grad.addColorStop(0, "rgba(255,255,255,0.4)");
+      grad.addColorStop(1, "rgba(255,255,255,0)");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // pegs
+      for (const peg of pegs) {
+        ctx.beginPath();
+        const outerGrad = ctx.createRadialGradient(
+          peg.x - 1,
+          peg.y - 1,
+          1,
+          peg.x,
+          peg.y,
+          peg.radius + 1
+        );
+        outerGrad.addColorStop(0, "#e0f2fe");
+        outerGrad.addColorStop(1, "#0ea5e9");
+        ctx.fillStyle = outerGrad;
+        ctx.arc(peg.x, peg.y, peg.radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // basket
+      ctx.save();
+      ctx.fillStyle = "#0f172a";
+      ctx.beginPath();
+      const r = 8;
+      const bx = basket.x;
+      const by = basket.y;
+      const bw = basket.width;
+      const bh = basket.height;
+      ctx.moveTo(bx + r, by);
+      ctx.lineTo(bx + bw - r, by);
+      ctx.quadraticCurveTo(bx + bw, by, bx + bw, by + r);
+      ctx.lineTo(bx + bw, by + bh);
+      ctx.lineTo(bx, by + bh);
+      ctx.lineTo(bx, by + r);
+      ctx.quadraticCurveTo(bx, by, bx + r, by);
+      ctx.closePath();
+      ctx.fill();
+
+      // inner line
+      ctx.strokeStyle = "rgba(248,250,252,0.8)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(bx + 6, by + 2);
+      ctx.lineTo(bx + bw - 6, by + 2);
+      ctx.stroke();
+      ctx.restore();
+
+      // ball
+      if (ball) {
+        ctx.save();
+        const bGrad = ctx.createRadialGradient(
+          ball.x - 3,
+          ball.y - 3,
+          2,
+          ball.x,
+          ball.y,
+          ball.radius + 2
+        );
+        bGrad.addColorStop(0, "#fefce8");
+        bGrad.addColorStop(1, "#facc15");
+        ctx.fillStyle = bGrad;
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    function gameLoop(timestamp) {
+      const delta = timestamp - lastTimestamp;
+      lastTimestamp = timestamp;
+
+      if (screens.game.classList.contains("active") && gameRunning) {
+        updateBallPhysics(delta);
+        drawGame();
+      } else if (screens.game.classList.contains("active")) {
+        drawGame(); // keep static drawing
+      }
+
+      requestAnimationFrame(gameLoop);
+    }
+
+    // Basket control
+    function moveBasket(dx) {
+      if (!basket) return;
+      basket.x += dx;
+      if (basket.x < 0) basket.x = 0;
+      if (basket.x + basket.width > canvas.width) {
+        basket.x = canvas.width - basket.width;
+      }
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (!screens.game.classList.contains("active")) return;
+      if (!basket) return;
+      if (e.key === "ArrowLeft") {
+        moveBasket(-basket.speed);
+      } else if (e.key === "ArrowRight") {
+        moveBasket(basket.speed);
+      }
+    });
+
+    // Desktop control
+    canvas.addEventListener("mousemove", (e) => {
+      if (!screens.game.classList.contains("active")) return;
+      if (!basket) return;
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      basket.x = x - basket.width / 2;
+      if (basket.x < 0) basket.x = 0;
+      if (basket.x + basket.width > canvas.width) {
+        basket.x = canvas.width - basket.width;
+      }
+    });
+
+    // Mobile control (drag to move)
+    function handleTouchMove(e) {
+      e.preventDefault();
+
+      const rect = canvas.getBoundingClientRect();
+      const touch = e.touches[0];
+
+      // Convert touch position to actual canvas coordinate system
+      const scaleX = canvas.width / rect.width;
+      const canvasX = (touch.clientX - rect.left) * scaleX;
+
+      basket.x = Math.max(
+        0,
+        Math.min(canvas.width - basket.width, canvasX - basket.width / 2)
+      );
+    }
+
+    canvas.addEventListener("touchstart", handleTouchMove, { passive: false });
+    canvas.addEventListener("touchmove", handleTouchMove, { passive: false });
+
+    // --------- QUESTIONS / ANSWERS ----------
+    const answerState = {
+      pets: null,
+      machine: null,
+      frustration: null,
+      petType: null,
+      cleanScore: null,
+    };
+
+    function wireOptionGroup(questionName, selector, pillClass) {
+      const group = document.querySelector(selector + "[data-question='" + questionName + "']");
+      if (!group) return;
+      group.addEventListener("click", (e) => {
+        const btn = e.target.closest("." + pillClass);
+        if (!btn) return;
+        const value = btn.getAttribute("data-value");
+        answerState[questionName] = value;
+
+        Array.from(group.children).forEach((child) =>
+          child.classList.remove("selected")
+        );
+        btn.classList.add("selected");
+      });
+    }
+
+    wireOptionGroup("pets", ".option-row", "option-pill");
+    wireOptionGroup("machine", ".option-row", "option-pill");
+    wireOptionGroup("frustration", ".option-row", "option-pill");
+    wireOptionGroup("petType", ".option-row", "option-pill");
+    wireOptionGroup("cleanScore", ".scale-row", "scale-pill");
+
+    function computeRewardText() {
+      let headline = "";
+      let sub = "";
+
+      // Everyone gets at least 5% off.
+      // 0–1 catches  → 5% off
+      // 2–3 catches  → 10% off
+      // 4–5 catches  → 10% off + free shipping
+      if (ballsCaught <= 1) {
+        headline = "You unlocked 5% off 🎉";
+        sub =
+          "Nice try! Your skill still unlocked 5% off your next clean-home order. Free shipping is waiting if you catch more next time.";
+      } else if (ballsCaught <= 3) {
+        headline = "You unlocked 10% off ✨";
+        sub =
+          "Solid catching skills. Enjoy 10% off your next order. Your agent will apply it when you share this result with them.";
+      } else {
+        headline = "10% Off + Free Shipping 🏆";
+        sub =
+          "You crushed it. You unlocked 10% off plus free shipping on your next order. Share this result with your agent so they can apply it.";
+      }
+
+      return { headline, sub };
+    }
+
+    // --------- EVENT WIRING ----------
+    document.getElementById("startGameBtn").addEventListener("click", () => {
+      showScreen("game");
+      resetGameState();
+      createNewBall(); // auto-start: no buttons
+    });
+
+    document.getElementById("submitAnswersBtn").addEventListener("click", () => {
+      // (Optional) validate answers here if you want to require everything
+      const { headline, sub } = computeRewardText();
+      document.getElementById("rewardHeadline").textContent = headline;
+      document.getElementById("rewardSub").textContent = sub;
+
+      // This is where you'd send answerState + ballsCaught into your backend
+      // to store as PI / preferences against the user profile.
+
+      showScreen("result");
+    });
+
+    document.getElementById("playDemoBtn").addEventListener("click", () => {
+      // Demo replay: does NOT change rewards, just lets them feel the game again
+      showScreen("game");
+      resetGameState();
+      createNewBall();
+    });
+
+    document.getElementById("shareBtn").addEventListener("click", () => {
+      // Build a short message that includes how many drops they caught and what they unlocked.
+      const { headline } = computeRewardText();
+      const copyText =
+        `Uproot Catch & Clean result: I caught ${ballsCaught} of ${TOTAL_BALLS} drops and unlocked: ${headline}.` +
+        "\n\nShare this with your agent so they can apply the reward to my order. (Agent: replace this line with the customer's unique link or code.)";
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard
+          .writeText(copyText)
+          .then(() => {
+            alert("Copied! Paste this message in your chat with your agent.");
+          })
+          .catch(() => {
+            // Fallback: show the text so they can copy manually.
+            alert(copyText);
+          });
+      } else {
+        // Older browsers: just show the text.
+        alert(copyText);
+      }
+    });
+
+    // Start the render loop
+    requestAnimationFrame(gameLoop);
+  </script>
 </body>
 </html>
